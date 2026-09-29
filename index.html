@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="筱悦的个人主页、AI 学习记录与图片背景移除工具。" />
+  <title>筱悦 · 个人主页</title>
+  <!-- 想换图标可修改下面的颜色或替换整个 data 内容 -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23142620'/%3E%3Cpath d='M18 41c8-20 20-20 28 0' fill='none' stroke='%23e2ff70' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='24' cy='25' r='3' fill='%23e2ff70'/%3E%3Ccircle cx='40' cy='25' r='3' fill='%23e2ff70'/%3E%3C/svg%3E" />
+  <style>
+    /* ========= 可快速修改的主题色 ========= */
+    :root {
+      --ink: #142620;
+      --paper: #f5f1e8;
+      --lime: #dfff5a;
+      --coral: #ff765f;
+      --muted: #6e7973;
+      --line: rgba(20, 38, 32, .16);
+      --display: "Arial Rounded MT Bold", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --body: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--body);
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input { font: inherit; }
+    a { color: inherit; }
+    .screen {
+      min-height: 100svh;
+      scroll-snap-align: start;
+      position: relative;
+      overflow: hidden;
+    }
+    .topbar {
+      position: fixed;
+      z-index: 10;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem clamp(1.25rem, 5vw, 5.5rem);
+      color: var(--paper);
+      mix-blend-mode: difference;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+    }
+    .topbar__right { display: flex; align-items: center; gap: 1.25rem; }
+    .topbar__links { display: flex; gap: 1.25rem; }
+    .topbar a { text-decoration: none; }
+    .topbar a:hover { text-decoration: underline; text-underline-offset: .3em; }
+    .weather {
+      display: inline-flex;
+      align-items: center;
+      gap: .42rem;
+      padding: .4rem .6rem;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      font-size: .7rem;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+    .weather__icon { font-size: .9rem; line-height: 1; }
+
+    /* 第一屏：个人介绍 */
+    .about {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(330px, .88fr);
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .about__copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 7rem clamp(1.5rem, 7vw, 8rem) 3rem;
+    }
+    .eyebrow, .section-label {
+      margin: 0 0 1.25rem;
+      color: var(--lime);
+      font-size: .77rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+    }
+    h1, h2, p { margin-top: 0; }
+    h1 {
+      max-width: 9ch;
+      margin-bottom: 1.5rem;
+      font-family: var(--display);
+      font-size: clamp(3.9rem, 9.2vw, 8.5rem);
+      line-height: .92;
+      letter-spacing: -.08em;
+    }
+    .intro {
+      max-width: 28rem;
+      margin-bottom: 2.2rem;
+      font-size: clamp(1rem, 1.45vw, 1.2rem);
+      line-height: 1.8;
+      color: rgba(245, 241, 232, .82);
+    }
+    .info-block { max-width: 34rem; }
+    .info-block + .info-block { margin-top: 1.55rem; }
+    .info-title {
+      display: block;
+      margin-bottom: .65rem;
+      color: var(--lime);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .13em;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: .55rem; }
+    .chip {
+      padding: .52rem .8rem;
+      border: 1px solid rgba(245, 241, 232, .35);
+      border-radius: 999px;
+      font-size: .88rem;
+      line-height: 1;
+    }
+    .goal { margin: 0; font-size: .95rem; line-height: 1.65; }
+    .about__visual {
+      position: relative;
+      min-height: 100svh;
+      padding: clamp(5rem, 9vw, 8rem) clamp(1.5rem, 4vw, 4.5rem) clamp(2rem, 5vw, 4.5rem) 0;
+    }
+    .portrait-frame {
+      height: 100%;
+      min-height: 34rem;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      border-radius: 14rem 14rem 1rem 1rem;
+      background: var(--coral);
+    }
+    .portrait-frame::after {
+      content: "HELLO / 你好";
+      position: absolute;
+      z-index: 2;
+      right: -1.7rem;
+      bottom: 2.5rem;
+      color: var(--lime);
+      font-family: var(--display);
+      font-size: clamp(2.8rem, 5vw, 5.5rem);
+      letter-spacing: -.08em;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+    .portrait {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 52% 32%;
+      filter: saturate(.88) contrast(1.05);
+      mix-blend-mode: multiply;
+    }
+    .portrait-tag {
+      position: absolute;
+      left: 1.25rem;
+      bottom: 1.35rem;
+      z-index: 3;
+      padding: .55rem .75rem;
+      color: var(--ink);
+      background: var(--lime);
+      border-radius: 999px;
+      font-size: .74rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+    .scroll-cue {
+      position: absolute;
+      bottom: 2rem;
+      left: clamp(1.5rem, 7vw, 8rem);
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      color: rgba(245, 241, 232, .65);
+      font-size: .72rem;
+      letter-spacing: .1em;
+    }
+    .scroll-cue::before { content: "↓"; color: var(--lime); font-size: 1rem; }
+
+    /* 第二屏：学习记录。复制 .record 一块，即可继续增加新条目。 */
+    .learning {
+      display: grid;
+      grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+      gap: clamp(2rem, 6vw, 7rem);
+      padding: clamp(6rem, 11vw, 9rem) clamp(1.5rem, 9vw, 10rem) 4rem;
+      background: var(--paper);
+    }
+    .learning__heading { align-self: start; }
+    .learning h2 {
+      max-width: 6ch;
+      margin-bottom: 1.4rem;
+      font-family: var(--display);
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      line-height: .94;
+      letter-spacing: -.075em;
+    }
+    .learning__note {
+      max-width: 22rem;
+      margin: 0;
+      color: var(--muted);
+      font-size: .98rem;
+      line-height: 1.75;
+    }
+    .timeline {
+      position: relative;
+      margin: clamp(1rem, 9vw, 6rem) 0 0;
+      padding-left: clamp(2rem, 5vw, 4rem);
+      list-style: none;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: .35rem;
+      bottom: .35rem;
+      left: .45rem;
+      width: 1px;
+      background: var(--line);
+    }
+    .record {
+      position: relative;
+      padding: 0 0 clamp(2.5rem, 6vw, 4.6rem);
+    }
+    .record:last-child { padding-bottom: 0; }
+    .record::before {
+      content: "";
+      position: absolute;
+      top: .18rem;
+      left: calc(-1 * clamp(2rem, 5vw, 4rem) + .1rem);
+      width: .75rem;
+      height: .75rem;
+      border: .16rem solid var(--paper);
+      border-radius: 50%;
+      background: var(--coral);
+      box-shadow: 0 0 0 1px var(--ink);
+    }
+    .record:first-child::before { background: var(--lime); }
+    .record__index {
+      display: inline-block;
+      margin-bottom: .75rem;
+      padding: .28rem .5rem;
+      border-radius: .3rem;
+      color: var(--paper);
+      background: var(--ink);
+      font-size: .69rem;
+      font-weight: 800;
+      letter-spacing: .1em;
+    }
+    .record h3 {
+      margin-bottom: .7rem;
+      font-family: var(--display);
+      font-size: clamp(1.7rem, 3vw, 2.7rem);
+      line-height: 1.08;
+      letter-spacing: -.05em;
+    }
+    .record p {
+      max-width: 31rem;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: .96rem;
+      line-height: 1.75;
+    }
+    .record .status { color: var(--ink); font-weight: 700; }
+    .footer-note {
+      grid-column: 1 / -1;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .78rem;
+      letter-spacing: .04em;
+    }
+
+    /* 第三屏：图片背景移除工具 */
+    .remove-bg {
+      display: grid;
+      grid-template-columns: minmax(15rem, .72fr) minmax(0, 1.28fr);
+      gap: clamp(2rem, 6vw, 6rem);
+      padding: clamp(6rem, 10vw, 8.5rem) clamp(1.25rem, 7vw, 8rem) 4rem;
+      background: var(--coral);
+      color: var(--ink);
+    }
+    .remove-bg__intro {
+      align-self: start;
+      position: sticky;
+      top: 7rem;
+    }
+    .remove-bg .section-label { color: var(--ink); }
+    .remove-bg h2 {
+      max-width: 7ch;
+      margin-bottom: 1.4rem;
+      font-family: var(--display);
+      font-size: clamp(3rem, 6.8vw, 6.4rem);
+      line-height: .92;
+      letter-spacing: -.075em;
+    }
+    .remove-bg__intro p:not(.section-label) {
+      max-width: 23rem;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+    .tool-card {
+      align-self: start;
+      padding: clamp(1rem, 2.5vw, 1.7rem);
+      border: 1px solid rgba(20, 38, 32, .28);
+      border-radius: 1.4rem;
+      background: var(--paper);
+      box-shadow: .7rem .7rem 0 var(--ink);
+    }
+    .drop-zone {
+      display: grid;
+      min-height: 9rem;
+      padding: 1.4rem;
+      place-items: center;
+      border: 1.5px dashed rgba(20, 38, 32, .48);
+      border-radius: 1rem;
+      background: rgba(223, 255, 90, .2);
+      text-align: center;
+      cursor: pointer;
+      transition: background .18s ease, transform .18s ease, border-color .18s ease;
+    }
+    .drop-zone:hover,
+    .drop-zone:focus-within,
+    .drop-zone.is-dragging {
+      border-color: var(--ink);
+      background: rgba(223, 255, 90, .54);
+      transform: translateY(-2px);
+    }
+    .drop-zone input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .drop-zone__mark {
+      display: block;
+      margin-bottom: .5rem;
+      font-family: var(--display);
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+    .drop-zone strong { display: block; margin-bottom: .35rem; font-size: 1rem; }
+    .drop-zone small { color: var(--muted); font-size: .78rem; }
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .85rem;
+      margin-top: 1rem;
+    }
+    .preview-panel {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: .95rem;
+      background: #fff;
+    }
+    .preview-panel figcaption {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 2.7rem;
+      padding: .65rem .8rem;
+      border-bottom: 1px solid var(--line);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+    .preview-panel__stage {
+      display: grid;
+      min-height: clamp(13rem, 30vw, 22rem);
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      background-color: #eeeae2;
+      background-image:
+        linear-gradient(45deg, rgba(20, 38, 32, .08) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(20, 38, 32, .08) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(20, 38, 32, .08) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(20, 38, 32, .08) 75%);
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+      background-size: 20px 20px;
+    }
+    .preview-panel img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-height: 28rem;
+      object-fit: contain;
+    }
+    .preview-placeholder {
+      max-width: 12rem;
+      padding: 1rem;
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.6;
+      text-align: center;
+    }
+    .tool-actions {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-top: 1rem;
+    }
+    .action-button,
+    .download-button {
+      min-height: 3rem;
+      padding: .78rem 1.15rem;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      font-size: .88rem;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .action-button {
+      flex: 1;
+      color: var(--lime);
+      background: var(--ink);
+    }
+    .action-button:hover:not(:disabled) { background: #203a31; }
+    .action-button:disabled { cursor: not-allowed; opacity: .45; }
+    .download-button { color: var(--ink); background: var(--lime); }
+    .download-button:hover { background: #d4f24f; }
+    .tool-message {
+      min-height: 1.5rem;
+      margin: .75rem .15rem 0;
+      color: var(--muted);
+      font-size: .78rem;
+      line-height: 1.55;
+    }
+    .tool-error {
+      min-height: 1.5rem;
+      margin: .25rem .15rem 0;
+      color: #b12617;
+      font-size: .78rem;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    /* 第四屏：OpenRouter 文字生成图像 */
+    .image-gen {
+      display: grid;
+      grid-template-columns: minmax(18rem, .78fr) minmax(0, 1.22fr);
+      gap: clamp(2rem, 6vw, 6rem);
+      padding: clamp(6rem, 10vw, 8.5rem) clamp(1.25rem, 7vw, 8rem) 4rem;
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .image-gen__controls { align-self: center; }
+    .image-gen h2 {
+      max-width: 8ch;
+      margin-bottom: 1.2rem;
+      font-family: var(--display);
+      font-size: clamp(3rem, 6.8vw, 6.4rem);
+      line-height: .92;
+      letter-spacing: -.075em;
+    }
+    .image-gen__intro {
+      max-width: 27rem;
+      margin-bottom: 1.8rem;
+      color: rgba(245, 241, 232, .72);
+      font-size: .98rem;
+      line-height: 1.75;
+    }
+    .prompt-form {
+      padding: clamp(1rem, 2.5vw, 1.6rem);
+      border: 1px solid rgba(245, 241, 232, .28);
+      border-radius: 1.25rem;
+      background: rgba(245, 241, 232, .07);
+    }
+    .form-label {
+      display: block;
+      margin-bottom: .55rem;
+      color: var(--lime);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .11em;
+    }
+    .prompt-form textarea,
+    .prompt-form select {
+      width: 100%;
+      border: 1px solid rgba(245, 241, 232, .3);
+      border-radius: .8rem;
+      outline: none;
+      color: var(--paper);
+      background: rgba(0, 0, 0, .18);
+    }
+    .prompt-form textarea {
+      min-height: 10rem;
+      padding: 1rem;
+      resize: vertical;
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+    .prompt-form textarea::placeholder { color: rgba(245, 241, 232, .42); }
+    .prompt-form textarea:focus,
+    .prompt-form select:focus { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(223, 255, 90, .12); }
+    .generator-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .75rem;
+      margin-top: .9rem;
+    }
+    .prompt-form select { height: 3rem; padding: 0 .85rem; font-size: .88rem; }
+    .prompt-form select option { color: var(--ink); background: var(--paper); }
+    .generate-button {
+      width: 100%;
+      min-height: 3.2rem;
+      margin-top: 1rem;
+      border: 1px solid var(--lime);
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--lime);
+      font-size: .9rem;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .generate-button:hover:not(:disabled) { background: #d4f24f; transform: translateY(-1px); }
+    .generate-button:disabled { cursor: not-allowed; opacity: .48; }
+    .generation-note {
+      min-height: 1.4rem;
+      margin: .75rem .15rem 0;
+      color: rgba(245, 241, 232, .58);
+      font-size: .77rem;
+      line-height: 1.55;
+    }
+    .generation-error {
+      min-height: 1.4rem;
+      margin: .2rem .15rem 0;
+      color: #ff9a86;
+      font-size: .78rem;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+    .generation-output {
+      align-self: center;
+      min-width: 0;
+    }
+    .generation-frame {
+      display: grid;
+      min-height: clamp(28rem, 65vw, 45rem);
+      position: relative;
+      overflow: hidden;
+      place-items: center;
+      border: 1px solid rgba(245, 241, 232, .32);
+      border-radius: clamp(1.5rem, 5vw, 4rem) .7rem clamp(1.5rem, 5vw, 4rem) .7rem;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 118, 95, .36), transparent 36%),
+        radial-gradient(circle at 82% 78%, rgba(223, 255, 90, .2), transparent 30%),
+        #0d1d18;
+    }
+    .generation-frame::before {
+      content: "IMAGINE / MAKE / SEE";
+      position: absolute;
+      top: 1.2rem;
+      left: 1.35rem;
+      color: rgba(245, 241, 232, .45);
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .16em;
+    }
+    .generation-empty {
+      max-width: 22rem;
+      padding: 2rem;
+      text-align: center;
+    }
+    .generation-empty strong {
+      display: block;
+      margin-bottom: .8rem;
+      color: var(--lime);
+      font-family: var(--display);
+      font-size: clamp(2rem, 4.5vw, 4.2rem);
+      line-height: .95;
+      letter-spacing: -.06em;
+    }
+    .generation-empty span { color: rgba(245, 241, 232, .6); font-size: .88rem; line-height: 1.65; }
+    .generated-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-height: 50rem;
+      object-fit: contain;
+    }
+    .generation-output__bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      min-height: 3.8rem;
+      padding: .8rem .2rem 0;
+      color: rgba(245, 241, 232, .64);
+      font-size: .75rem;
+    }
+    .generation-download {
+      display: inline-grid;
+      min-height: 2.75rem;
+      padding: .65rem 1rem;
+      place-items: center;
+      border: 1px solid var(--paper);
+      border-radius: 999px;
+      color: var(--paper);
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .generation-download:hover { color: var(--ink); background: var(--paper); }
+    [hidden] { display: none !important; }
+
+    @media (max-width: 760px) {
+      html { scroll-snap-type: none; }
+      .topbar { padding: 1rem 1.25rem; }
+      .topbar > a { display: none; }
+      .topbar__right { width: 100%; justify-content: space-between; gap: .6rem; }
+      .topbar__links { gap: .65rem; }
+      .weather { padding: .35rem .45rem; font-size: .61rem; }
+      .about { display: flex; flex-direction: column-reverse; }
+      .about__visual { min-height: auto; padding: 4.25rem 1.25rem 0; }
+      .portrait-frame { min-height: 31rem; height: 68svh; border-radius: 9rem 9rem 0 0; }
+      .portrait { object-position: 52% 27%; }
+      .about__copy { min-height: auto; padding: 3.2rem 1.25rem 5rem; }
+      h1 { font-size: clamp(4rem, 20vw, 6.2rem); }
+      .scroll-cue { left: 1.25rem; bottom: 1.5rem; }
+      .learning { display: block; min-height: 100svh; padding: 5.7rem 1.25rem 3.5rem; }
+      .timeline { margin-top: 3rem; }
+      .footer-note { margin-top: 3.4rem; }
+      .remove-bg { display: block; padding: 5.7rem 1.25rem 3.5rem; }
+      .remove-bg__intro { position: static; }
+      .tool-card { margin-top: 2.4rem; box-shadow: .42rem .42rem 0 var(--ink); }
+      .compare-grid { grid-template-columns: 1fr; }
+      .preview-panel__stage { min-height: 17rem; }
+      .tool-actions { align-items: stretch; flex-direction: column; }
+      .action-button, .download-button { display: grid; width: 100%; place-items: center; }
+      .image-gen { display: block; padding: 5.7rem 1.25rem 3.5rem; }
+      .generation-output { margin-top: 2.4rem; }
+      .generation-frame { min-height: 28rem; }
+    }
+    @media (max-width: 390px) {
+      .topbar__links a:nth-child(-n+2) { display: none; }
+      .generator-options { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <nav class="topbar" aria-label="页面导航">
+    <a href="#about">XY / 2026</a>
+    <div class="topbar__right">
+      <!-- 北京天气：由页面下方的 Open-Meteo 请求自动更新 -->
+      <span class="weather" id="weather" role="status" aria-live="polite" aria-label="正在加载北京天气">
+        <span class="weather__icon" aria-hidden="true">◌</span>
+        <span id="weather-text">北京 · 加载中</span>
+      </span>
+      <div class="topbar__links">
+        <a href="#about">关于我</a>
+        <a href="#learning">学习记录</a>
+        <a href="#remove-bg">去背景</a>
+        <a href="#image-gen">文字生图</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="screen about" id="about" aria-labelledby="about-title">
+      <div class="about__copy">
+        <p class="eyebrow">ABOUT ME · 01</p>
+        <!-- 昵称：修改下面的“筱悦”即可 -->
+        <h1 id="about-title">筱悦</h1>
+        <!-- 一句话介绍：可在此替换 -->
+        <p class="intro">传媒背景的 AI 学习者，喜欢把复杂的问题梳理成清晰、有温度的表达。</p>
+
+        <div class="info-block">
+          <span class="info-title">我喜欢</span>
+          <!-- 兴趣爱好：可增删 span 标签 -->
+          <div class="chips" aria-label="兴趣爱好">
+            <span class="chip">纪录片</span>
+            <span class="chip">播客</span>
+            <span class="chip">深度对话</span>
+            <span class="chip">AI 创作</span>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <span class="info-title">正在前往</span>
+          <!-- 学习目标：可在此替换 -->
+          <p class="goal">理解 AI 如何真正服务于人，并用用户洞察、产品思维和持续实践，做出有价值的应用。</p>
+        </div>
+      </div>
+
+      <div class="about__visual" aria-label="筱悦的头像照片">
+        <div class="portrait-frame">
+          <!-- 头像图片：替换 src 即可换成新的头像 -->
+          <img class="portrait" src="IMG_7667.JPG" alt="筱悦在户外活动现场的照片" />
+          <span class="portrait-tag">CURIOUS · MAKER</span>
+        </div>
+      </div>
+      <a class="scroll-cue" href="#learning">向下阅读</a>
+    </section>
+
+    <section class="screen learning" id="learning" aria-labelledby="learning-title">
+      <header class="learning__heading">
+        <p class="section-label">LEARNING LOG · 02</p>
+        <h2 id="learning-title">我的<br />学习记录</h2>
+        <p class="learning__note">每一个小小完成，都是把“想学”变成“会做”的证据。</p>
+      </header>
+
+      <ol class="timeline" aria-label="学习时间线">
+        <!-- 新记录：复制整个 li.record，并修改编号、标题与说明 -->
+        <li class="record">
+          <span class="record__index">01 · DONE</span>
+          <h3>第一个功能能实现：<br />爬虫抓取</h3>
+          <p><span class="status">完成。</span> 让程序自动获取需要的信息，第一次把“想法”变成了可以运行的功能。</p>
+        </li>
+        <li class="record">
+          <span class="record__index">02 · DONE</span>
+          <h3>第一个个人网页：<br />我的个人主页</h3>
+          <p><span class="status">完成。</span> 从内容到页面，亲手搭建一处属于自己的线上小角落，也为下一次创作留下起点。</p>
+        </li>
+        <li class="record">
+          <span class="record__index">03 · NEW</span>
+          <h3>第一次 API 调用</h3>
+          <p><span class="status">完成。</span> 让个人网页连接实时天气数据，第一次感受到页面可以与外部世界交换信息。</p>
+        </li>
+      </ol>
+
+      <p class="footer-note">KEEP MAKING, KEEP LEARNING. · 持续更新中</p>
+    </section>
+
+    <section class="screen remove-bg" id="remove-bg" aria-labelledby="remove-bg-title">
+      <header class="remove-bg__intro">
+        <p class="section-label">AI TOOL · 03</p>
+        <h2 id="remove-bg-title">一键去除<br />图片背景</h2>
+        <p>上传一张图片，AI 会识别主体并生成透明背景 PNG。适合人物、商品与轮廓清晰的物体。</p>
+      </header>
+
+      <form class="tool-card" id="remove-bg-form">
+        <label class="drop-zone" id="drop-zone">
+          <input id="image-input" name="image" type="file" accept="image/png,image/jpeg,image/webp" />
+          <span>
+            <span class="drop-zone__mark" aria-hidden="true">＋</span>
+            <strong>拖拽图片到这里，或点击选择</strong>
+            <small>支持 JPG、PNG、WebP，最大 10 MB</small>
+          </span>
+        </label>
+
+        <div class="compare-grid" aria-label="处理前后图片对比">
+          <figure class="preview-panel">
+            <figcaption><span>原图</span><span>BEFORE</span></figcaption>
+            <div class="preview-panel__stage">
+              <p class="preview-placeholder" id="original-placeholder">选择图片后将在这里预览</p>
+              <img id="original-preview" alt="上传图片的原图预览" hidden />
+            </div>
+          </figure>
+
+          <figure class="preview-panel">
+            <figcaption><span>去除背景</span><span>AFTER</span></figcaption>
+            <div class="preview-panel__stage">
+              <p class="preview-placeholder" id="result-placeholder">处理结果将在这里显示</p>
+              <img id="result-preview" alt="去除背景后的透明 PNG" hidden />
+            </div>
+          </figure>
+        </div>
+
+        <div class="tool-actions">
+          <button class="action-button" id="remove-button" type="submit" disabled>去除背景</button>
+          <a class="download-button" id="download-button" href="#" download="removed-background.png" hidden>下载 PNG</a>
+        </div>
+        <p class="tool-message" id="tool-message" aria-live="polite">图片只用于本次处理，不会保存在这个网页中。</p>
+        <p class="tool-error" id="tool-error" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <section class="screen image-gen" id="image-gen" aria-labelledby="image-gen-title">
+      <div class="image-gen__controls">
+        <p class="section-label">OPENROUTER LAB · 04</p>
+        <h2 id="image-gen-title">文字生成<br />图像</h2>
+        <p class="image-gen__intro">把脑海里的画面写下来，交给 GPT-5.4 Image 2 生成。描述越具体，构图、光线和质感越容易接近你的想象。</p>
+
+        <form class="prompt-form" id="image-gen-form">
+          <label class="form-label" for="image-prompt">画面描述</label>
+          <textarea id="image-prompt" maxlength="2000" placeholder="例如：雨后的北京胡同，电影感纪实摄影，傍晚蓝调时刻，暖色灯笼倒映在湿润的石板路上……" required></textarea>
+
+          <div class="generator-options">
+            <label>
+              <span class="form-label">画面比例</span>
+              <select id="image-aspect">
+                <option value="1:1">1:1 · 方形</option>
+                <option value="16:9">16:9 · 横屏</option>
+                <option value="9:16">9:16 · 竖屏</option>
+                <option value="4:3">4:3 · 经典横幅</option>
+                <option value="3:4">3:4 · 经典竖幅</option>
+                <option value="3:2">3:2 · 摄影横幅</option>
+                <option value="2:3">2:3 · 摄影竖幅</option>
+                <option value="21:9">21:9 · 宽银幕</option>
+              </select>
+            </label>
+            <label>
+              <span class="form-label">生成质量</span>
+              <select id="image-quality">
+                <option value="auto">自动</option>
+                <option value="low">低 · 更快</option>
+                <option value="medium" selected>中 · 推荐</option>
+                <option value="high">高 · 更精细</option>
+              </select>
+            </label>
+          </div>
+
+          <button class="generate-button" id="generate-button" type="submit">开始生成</button>
+          <p class="generation-note" id="generation-note" aria-live="polite">每次生成会消耗 OpenRouter 额度，通常需要几十秒。</p>
+          <p class="generation-error" id="generation-error" role="alert" hidden></p>
+        </form>
+      </div>
+
+      <div class="generation-output">
+        <div class="generation-frame" id="generation-frame">
+          <div class="generation-empty" id="generation-empty">
+            <strong>YOUR IDEA,<br />MADE VISIBLE.</strong>
+            <span>写下一个足够具体的画面，让想象第一次拥有像素。</span>
+          </div>
+          <img class="generated-image" id="generated-image" alt="根据文字描述生成的图片" hidden />
+        </div>
+        <div class="generation-output__bar">
+          <span id="generation-meta">等待你的描述</span>
+          <a class="generation-download" id="generation-download" href="#" download="openrouter-generated-image.png" hidden>下载图片</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    // 北京坐标；Open-Meteo 的公开接口不需要 API Key。
+    const weatherText = document.getElementById('weather-text');
+    const weatherBox = document.getElementById('weather');
+    const weatherIcon = weatherBox.querySelector('.weather__icon');
+    const weatherLabels = {
+      0: ['☀', '晴朗'], 1: ['◔', '大致晴朗'], 2: ['◑', '局部多云'], 3: ['☁', '阴天'],
+      45: ['〰', '有雾'], 48: ['〰', '雾凇'], 51: ['☂', '毛毛雨'], 53: ['☂', '毛毛雨'],
+      55: ['☂', '毛毛雨'], 56: ['☂', '冻毛毛雨'], 57: ['☂', '冻毛毛雨'], 61: ['☂', '小雨'],
+      63: ['☂', '中雨'], 65: ['☂', '大雨'], 66: ['☂', '冻雨'], 67: ['☂', '冻雨'],
+      71: ['❄', '小雪'], 73: ['❄', '中雪'], 75: ['❄', '大雪'], 77: ['❄', '冰粒'],
+      80: ['☂', '阵雨'], 81: ['☂', '阵雨'], 82: ['☂', '强阵雨'], 85: ['❄', '阵雪'],
+      86: ['❄', '强阵雪'], 95: ['ϟ', '雷暴'], 96: ['ϟ', '冰雹雷暴'], 99: ['ϟ', '强冰雹雷暴']
+    };
+
+    async function loadBeijingWeather() {
+      try {
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude=39.9042&longitude=116.4074&current=temperature_2m,weather_code&timezone=Asia%2FShanghai';
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('天气服务暂不可用');
+        const data = await response.json();
+        const [icon, label] = weatherLabels[data.current.weather_code] || ['◌', '天气未知'];
+        const temperature = Math.round(data.current.temperature_2m);
+        weatherIcon.textContent = icon;
+        weatherText.textContent = `北京 · ${temperature}°C · ${label}`;
+        weatherBox.setAttribute('aria-label', `北京当前天气：${temperature} 摄氏度，${label}`);
+      } catch (error) {
+        weatherIcon.textContent = '—';
+        weatherText.textContent = '北京 · 暂不可用';
+        weatherBox.setAttribute('aria-label', '北京天气暂不可用');
+      }
+    }
+
+    loadBeijingWeather();
+
+    // 图片背景移除交互：令牌仅在服务器端读取，浏览器不会接触到它。
+    const removeForm = document.getElementById('remove-bg-form');
+    const fileInput = document.getElementById('image-input');
+    const dropZone = document.getElementById('drop-zone');
+    const removeButton = document.getElementById('remove-button');
+    const downloadButton = document.getElementById('download-button');
+    const originalPreview = document.getElementById('original-preview');
+    const resultPreview = document.getElementById('result-preview');
+    const originalPlaceholder = document.getElementById('original-placeholder');
+    const resultPlaceholder = document.getElementById('result-placeholder');
+    const toolMessage = document.getElementById('tool-message');
+    const toolError = document.getElementById('tool-error');
+    let selectedFile = null;
+    let originalObjectUrl = '';
+    let resultObjectUrl = '';
+
+    function showToolError(message) {
+      toolError.textContent = message;
+      toolError.hidden = !message;
+    }
+
+    function chooseImage(file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!file || !allowedTypes.includes(file.type)) {
+        showToolError('请选择 JPG、PNG 或 WebP 图片。');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        showToolError('图片不能超过 10 MB，请压缩后重试。');
+        return;
+      }
+
+      selectedFile = file;
+      showToolError('');
+      if (originalObjectUrl) URL.revokeObjectURL(originalObjectUrl);
+      if (resultObjectUrl) URL.revokeObjectURL(resultObjectUrl);
+      originalObjectUrl = URL.createObjectURL(file);
+      resultObjectUrl = '';
+      originalPreview.src = originalObjectUrl;
+      originalPreview.hidden = false;
+      originalPlaceholder.hidden = true;
+      resultPreview.removeAttribute('src');
+      resultPreview.hidden = true;
+      resultPlaceholder.hidden = false;
+      downloadButton.hidden = true;
+      removeButton.disabled = false;
+      toolMessage.textContent = `已选择 ${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+    }
+
+    fileInput.addEventListener('change', () => chooseImage(fileInput.files[0]));
+
+    ['dragenter', 'dragover'].forEach((eventName) => {
+      dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropZone.classList.add('is-dragging');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach((eventName) => {
+      dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropZone.classList.remove('is-dragging');
+      });
+    });
+
+    dropZone.addEventListener('drop', (event) => chooseImage(event.dataTransfer.files[0]));
+
+    removeForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!selectedFile) return;
+
+      removeButton.disabled = true;
+      removeButton.textContent = '处理中…';
+      dropZone.setAttribute('aria-busy', 'true');
+      resultPlaceholder.textContent = 'AI 正在识别主体，请稍候…';
+      toolMessage.textContent = '正在安全上传并处理图片…';
+      showToolError('');
+
+      try {
+        const body = new FormData();
+        body.append('image', selectedFile, selectedFile.name);
+        const response = await fetch('/api/remove-bg', { method: 'POST', body });
+        if (!response.ok) {
+          const details = await response.json().catch(() => ({}));
+          throw new Error(details.error || '处理失败，请稍后再试。');
+        }
+
+        const resultBlob = await response.blob();
+        if (resultObjectUrl) URL.revokeObjectURL(resultObjectUrl);
+        resultObjectUrl = URL.createObjectURL(resultBlob);
+        resultPreview.src = resultObjectUrl;
+        resultPreview.hidden = false;
+        resultPlaceholder.hidden = true;
+        downloadButton.href = resultObjectUrl;
+        downloadButton.hidden = false;
+        toolMessage.textContent = '处理完成，可以下载透明背景 PNG。';
+      } catch (error) {
+        resultPlaceholder.hidden = false;
+        resultPlaceholder.textContent = '结果暂未生成';
+        toolMessage.textContent = '图片仍保留在浏览器中，你可以直接重试。';
+        showToolError(error.message || '处理失败，请稍后再试。');
+      } finally {
+        removeButton.disabled = false;
+        removeButton.textContent = '去除背景';
+        dropZone.removeAttribute('aria-busy');
+      }
+    });
+
+    // OpenRouter 文字生成图像：浏览器只请求本站 API，密钥留在服务器环境变量中。
+    const imageGenForm = document.getElementById('image-gen-form');
+    const imagePrompt = document.getElementById('image-prompt');
+    const imageAspect = document.getElementById('image-aspect');
+    const imageQuality = document.getElementById('image-quality');
+    const generateButton = document.getElementById('generate-button');
+    const generationNote = document.getElementById('generation-note');
+    const generationError = document.getElementById('generation-error');
+    const generationEmpty = document.getElementById('generation-empty');
+    const generatedImage = document.getElementById('generated-image');
+    const generationMeta = document.getElementById('generation-meta');
+    const generationDownload = document.getElementById('generation-download');
+    let generatedObjectUrl = '';
+
+    function showGenerationError(message) {
+      generationError.textContent = message;
+      generationError.hidden = !message;
+    }
+
+    imageGenForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const prompt = imagePrompt.value.trim();
+      if (prompt.length < 3) {
+        showGenerationError('请至少输入 3 个字的画面描述。');
+        return;
+      }
+
+      generateButton.disabled = true;
+      generateButton.textContent = '生成中…';
+      generationNote.textContent = '正在理解描述并绘制画面，请不要关闭页面…';
+      generationMeta.textContent = `${imageAspect.value} · ${imageQuality.options[imageQuality.selectedIndex].text}`;
+      generationEmpty.querySelector('strong').textContent = 'CREATING…';
+      generationEmpty.querySelector('span').textContent = '复杂画面可能需要更长时间，请耐心等待。';
+      generationEmpty.hidden = false;
+      generatedImage.hidden = true;
+      generationDownload.hidden = true;
+      showGenerationError('');
+
+      try {
+        const response = await fetch('/api/generate-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt,
+            aspectRatio: imageAspect.value,
+            quality: imageQuality.value
+          })
+        });
+        if (!response.ok) {
+          const details = await response.json().catch(() => ({}));
+          throw new Error(details.error || '生成失败，请稍后再试。');
+        }
+
+        const imageBlob = await response.blob();
+        if (generatedObjectUrl) URL.revokeObjectURL(generatedObjectUrl);
+        generatedObjectUrl = URL.createObjectURL(imageBlob);
+        generatedImage.src = generatedObjectUrl;
+        generatedImage.hidden = false;
+        generationEmpty.hidden = true;
+        generationDownload.href = generatedObjectUrl;
+        generationDownload.download = imageBlob.type === 'image/jpeg'
+          ? 'openrouter-generated-image.jpg'
+          : imageBlob.type === 'image/webp'
+            ? 'openrouter-generated-image.webp'
+            : 'openrouter-generated-image.png';
+        generationDownload.hidden = false;
+        const cost = response.headers.get('x-generation-cost');
+        generationMeta.textContent = cost
+          ? `${imageAspect.value} · 已完成 · $${Number(cost).toFixed(4)}`
+          : `${imageAspect.value} · 已完成`;
+        generationNote.textContent = '生成完成。你可以下载图片，或修改描述继续创作。';
+      } catch (error) {
+        generationEmpty.querySelector('strong').textContent = 'TRY AGAIN.';
+        generationEmpty.querySelector('span').textContent = '调整描述、画质或比例后可以重新生成。';
+        generationMeta.textContent = '本次未生成图片';
+        generationNote.textContent = '描述仍保留在输入框中。';
+        showGenerationError(error.message || '生成失败，请稍后再试。');
+      } finally {
+        generateButton.disabled = false;
+        generateButton.textContent = '开始生成';
+      }
+    });
+  </script>
+</body>
+</html>

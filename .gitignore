@@ -1,0 +1,9 @@
+dist/
+.env
+.env.*
+!.env.example
+.dev.vars
+.DS_Store
+人生正事.docx
+个人陈述.docx
+胡筱悦_AI职业转型与长期发展交接档案_完整迁移版.md

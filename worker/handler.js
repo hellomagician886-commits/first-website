@@ -171,7 +171,7 @@ async function generateImage(request, env) {
         Authorization: `Bearer ${apiKey}`,
         "content-type": "application/json",
         "HTTP-Referer": "https://xiaoyue-ai-lab-2026.lemony-spice-7059.chatgpt.site",
-        "X-OpenRouter-Title": "筱悦的 AI 图像实验室",
+        "X-OpenRouter-Title": "胡筱悦的 AI 图像实验室",
       },
       body: JSON.stringify({
         model: OPENROUTER_MODEL,

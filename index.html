@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="筱悦的个人主页、AI 学习记录与图片背景移除工具。" />
-  <title>筱悦 · 个人主页</title>
+  <meta name="description" content="胡筱悦的个人主页、AI 学习记录与创作工具。" />
+  <title>胡筱悦 · 个人主页</title>
   <!-- 想换图标可修改下面的颜色或替换整个 data 内容 -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23142620'/%3E%3Cpath d='M18 41c8-20 20-20 28 0' fill='none' stroke='%23e2ff70' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='24' cy='25' r='3' fill='%23e2ff70'/%3E%3Ccircle cx='40' cy='25' r='3' fill='%23e2ff70'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23171717'/%3E%3Cpath d='M17 43c8-24 22-24 30 0M20 21l9-4M35 18l10 3' fill='none' stroke='%23f4f4f0' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='25' cy='29' r='2.8' fill='%23f4f4f0'/%3E%3Ccircle cx='40' cy='29' r='2.8' fill='%23f4f4f0'/%3E%3C/svg%3E" />
   <style>
     /* ========= 可快速修改的主题色 ========= */
     :root {
@@ -652,10 +652,331 @@
     }
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   </style>
+  <style id="handdrawn-theme">
+    :root {
+      --ink: #171717;
+      --paper: #f4f4f0;
+      --lime: #dadad4;
+      --coral: #c8c8c2;
+      --muted: #666662;
+      --line: rgba(23, 23, 23, .22);
+      --display: "STKaiti", "Kaiti SC", "KaiTi", "Songti SC", serif;
+      --body: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+
+    body {
+      background-color: var(--paper);
+      background-image:
+        linear-gradient(rgba(23, 23, 23, .025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 23, 23, .018) 1px, transparent 1px);
+      background-size: 26px 26px;
+    }
+
+    .topbar {
+      color: var(--ink);
+      background: rgba(244, 244, 240, .9);
+      border-bottom: 1px solid rgba(23, 23, 23, .22);
+      mix-blend-mode: normal;
+      backdrop-filter: blur(12px);
+    }
+
+    .weather {
+      background: #fff;
+      border: 1.5px solid var(--ink);
+      border-radius: 52% 48% 55% 45% / 48% 57% 43% 52%;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .about {
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 14% 22%, rgba(23, 23, 23, .045) 0 1px, transparent 1.5px) 0 0 / 9px 9px,
+        var(--paper);
+    }
+
+    .about__copy { position: relative; }
+    .about__copy::after {
+      content: "notes / ideas / practice";
+      position: absolute;
+      right: 8%;
+      bottom: 12%;
+      padding: .45rem .7rem;
+      border: 1px solid var(--ink);
+      font-family: ui-monospace, monospace;
+      font-size: .68rem;
+      letter-spacing: .08em;
+      transform: rotate(-4deg);
+    }
+
+    .eyebrow, .section-label, .info-title { color: var(--ink); }
+    h1 {
+      max-width: 7ch;
+      position: relative;
+      margin-bottom: 2rem;
+      font-size: clamp(4.5rem, 10vw, 9rem);
+      font-weight: 500;
+      letter-spacing: -.08em;
+      text-shadow: 3px 3px 0 #fff;
+    }
+    h1::after {
+      content: "";
+      position: absolute;
+      right: 4%;
+      bottom: -.45rem;
+      left: 0;
+      height: 7px;
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      transform: rotate(-1deg);
+    }
+    .intro { color: #4f4f4c; }
+    .chip {
+      border: 1.5px solid var(--ink);
+      border-radius: 52% 48% 46% 54% / 46% 55% 45% 54%;
+      background: rgba(255, 255, 255, .55);
+    }
+    .chip:nth-child(even) { transform: rotate(-1.5deg); }
+    .chip:nth-child(odd) { transform: rotate(1deg); }
+
+    .about__visual { padding-left: clamp(1rem, 2vw, 2rem); }
+    .portrait-frame {
+      border: 2px solid var(--ink);
+      border-radius: 49% 51% 47% 53% / 35% 37% 63% 65%;
+      background: #d7d7d2;
+      box-shadow: 12px 13px 0 #fff, 14px 15px 0 var(--ink);
+      transform: rotate(1deg);
+    }
+    .portrait-frame::after {
+      content: "HU XIAOYUE / 2026";
+      right: .85rem;
+      bottom: 2.2rem;
+      color: #fff;
+      font-family: ui-monospace, monospace;
+      font-size: clamp(1rem, 2.2vw, 2rem);
+      letter-spacing: .08em;
+      text-shadow: 1px 1px 0 #000;
+    }
+    .portrait {
+      filter: grayscale(1) contrast(1.18) brightness(.96);
+      mix-blend-mode: normal;
+    }
+    .portrait-tag {
+      color: #fff;
+      background: var(--ink);
+      border: 1px solid #fff;
+      border-radius: 0;
+      transform: rotate(-2deg);
+    }
+    .scroll-cue { color: #656561; }
+    .scroll-cue::before { color: var(--ink); }
+
+    .screen { border-bottom: 1px solid rgba(23, 23, 23, .22); }
+    .eyebrow, .section-label, .info-title, .record__index,
+    .form-label, .preview-panel figcaption, .footer-note {
+      font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    }
+
+    .learning {
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, transparent 0 72%, rgba(23, 23, 23, .035) 72% 72.2%, transparent 72.2%),
+        var(--paper);
+    }
+    .learning__heading {
+      position: sticky;
+      top: 7.5rem;
+    }
+    .learning h2,
+    .remove-bg h2,
+    .image-gen h2 {
+      font-weight: 500;
+      letter-spacing: -.06em;
+    }
+    .learning__note { color: #5d5d59; }
+    .timeline::before {
+      width: 0;
+      border-left: 2px dashed rgba(23, 23, 23, .42);
+      background: transparent;
+      transform: rotate(.35deg);
+    }
+    .record {
+      margin-bottom: clamp(1.4rem, 4vw, 2.8rem);
+      padding: clamp(1.25rem, 3vw, 2rem);
+      border: 1.5px solid var(--ink);
+      border-radius: 14px 6px 18px 8px;
+      background: rgba(255, 255, 255, .72);
+      box-shadow: 7px 7px 0 var(--ink);
+    }
+    .record:nth-child(odd) { transform: rotate(-.45deg); }
+    .record:nth-child(even) { transform: rotate(.5deg); }
+    .record:last-child { padding-bottom: clamp(1.25rem, 3vw, 2rem); }
+    .record::before {
+      top: 1.8rem;
+      left: calc(-1 * clamp(2rem, 5vw, 4rem) - .05rem);
+      width: .85rem;
+      height: .85rem;
+      border: 2px solid var(--ink);
+      border-radius: 46% 54% 40% 60%;
+      background: var(--paper);
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+    .record:first-child::before { background: var(--ink); }
+    .record__index {
+      border-radius: 0;
+      color: #fff;
+      background: var(--ink);
+      transform: rotate(-1.5deg);
+    }
+    .record h3 { font-weight: 500; }
+    .record p { color: #5a5a56; }
+    .footer-note { border-top: 2px solid var(--ink); }
+
+    .remove-bg {
+      background:
+        radial-gradient(circle at 1px 1px, rgba(23, 23, 23, .1) 1px, transparent 1.2px) 0 0 / 18px 18px,
+        #cececa;
+    }
+    .remove-bg__intro { top: 7.5rem; }
+    .remove-bg .section-label { color: var(--ink); }
+    .tool-card {
+      border: 2px solid var(--ink);
+      border-radius: 15px 7px 19px 9px;
+      background: #f8f8f5;
+      box-shadow: 10px 11px 0 var(--ink);
+      transform: rotate(.2deg);
+    }
+    .drop-zone {
+      border: 2px dashed var(--ink);
+      border-radius: 10px 17px 8px 15px;
+      background: #ededE8;
+    }
+    .drop-zone:hover,
+    .drop-zone:focus-within,
+    .drop-zone.is-dragging {
+      color: #fff;
+      border-color: var(--ink);
+      background: var(--ink);
+      transform: translate(-2px, -2px) rotate(-.25deg);
+      box-shadow: 5px 5px 0 #8a8a86;
+    }
+    .drop-zone:hover small,
+    .drop-zone:focus-within small,
+    .drop-zone.is-dragging small { color: #d8d8d4; }
+    .preview-panel {
+      border: 1.5px solid var(--ink);
+      border-radius: 9px 3px 12px 5px;
+      background: #fff;
+    }
+    .preview-panel:nth-child(1) { transform: rotate(-.35deg); }
+    .preview-panel:nth-child(2) { transform: rotate(.35deg); }
+    .preview-panel__stage {
+      background-color: #e8e8e4;
+      background-image:
+        linear-gradient(45deg, rgba(23, 23, 23, .08) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(23, 23, 23, .08) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(23, 23, 23, .08) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(23, 23, 23, .08) 75%);
+    }
+    .action-button,
+    .download-button {
+      border: 1.5px solid var(--ink);
+      border-radius: 8px 14px 7px 12px;
+      box-shadow: 3px 3px 0 #7b7b77;
+    }
+    .action-button { color: #fff; background: var(--ink); }
+    .action-button:hover:not(:disabled) { background: #3b3b39; transform: translate(-1px, -1px); }
+    .download-button { color: var(--ink); background: #fff; }
+    .download-button:hover { background: #deded9; }
+    .tool-error { color: var(--ink); border-left: 3px solid var(--ink); padding-left: .6rem; }
+
+    .image-gen {
+      color: #f4f4f0;
+      background:
+        linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .02) 1px, transparent 1px),
+        #171717;
+      background-size: 31px 31px;
+    }
+    .image-gen .section-label { color: #f4f4f0; }
+    .image-gen__intro { color: rgba(244, 244, 240, .7); }
+    .prompt-form {
+      border: 1.5px solid #f4f4f0;
+      border-radius: 10px 18px 8px 15px;
+      background: rgba(255, 255, 255, .055);
+      box-shadow: 7px 8px 0 #656561;
+      transform: rotate(-.2deg);
+    }
+    .form-label { color: #f4f4f0; }
+    .prompt-form textarea,
+    .prompt-form select {
+      border: 1px solid rgba(244, 244, 240, .55);
+      border-radius: 6px 11px 5px 9px;
+      color: #f4f4f0;
+      background: #0e0e0e;
+    }
+    .prompt-form textarea:focus,
+    .prompt-form select:focus {
+      border-color: #fff;
+      box-shadow: 3px 3px 0 rgba(255, 255, 255, .35);
+    }
+    .prompt-form select option { color: #171717; background: #f4f4f0; }
+    .generate-button {
+      border: 1.5px solid #fff;
+      border-radius: 7px 13px 6px 11px;
+      color: #171717;
+      background: #f4f4f0;
+      box-shadow: 4px 4px 0 #777773;
+    }
+    .generate-button:hover:not(:disabled) { background: #d2d2cd; transform: translate(-1px, -1px); }
+    .generation-error { color: #fff; border-left: 3px solid #fff; padding-left: .6rem; }
+    .generation-frame {
+      border: 2px solid #f4f4f0;
+      border-radius: 7% 3% 8% 4% / 5% 8% 4% 7%;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, .12), transparent 36%),
+        radial-gradient(circle at 82% 78%, rgba(255, 255, 255, .07), transparent 30%),
+        #0d0d0d;
+      box-shadow: 10px 11px 0 #62625f;
+      transform: rotate(.25deg);
+    }
+    .generation-frame::before {
+      color: rgba(244, 244, 240, .6);
+      font-family: ui-monospace, monospace;
+    }
+    .generation-empty strong { color: #f4f4f0; font-weight: 500; }
+    .generation-download {
+      border: 1.5px solid #f4f4f0;
+      border-radius: 6px 12px 5px 10px;
+      color: #f4f4f0;
+    }
+    .generation-download:hover { color: #171717; background: #f4f4f0; }
+
+    @media (max-width: 760px) {
+      .topbar { padding: .85rem 1rem; }
+      .about__visual { padding: 5rem 1.1rem 0; }
+      .portrait-frame {
+        height: 61svh;
+        min-height: 27rem;
+        border-radius: 46% 54% 8px 8px / 30% 34% 8px 8px;
+        box-shadow: 7px 8px 0 #fff, 9px 10px 0 var(--ink);
+      }
+      .about__copy { padding: 3.4rem 1.25rem 6rem; }
+      .about__copy::after { right: 1.25rem; bottom: 2.4rem; }
+      h1 { font-size: clamp(4.4rem, 21vw, 6.4rem); }
+      .learning__heading { position: static; }
+      .record { box-shadow: 5px 5px 0 var(--ink); }
+      .tool-card { box-shadow: 7px 8px 0 var(--ink); }
+      .generation-frame { box-shadow: 6px 7px 0 #62625f; }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { color-scheme: light; }
+    }
+  </style>
 </head>
 <body>
   <nav class="topbar" aria-label="页面导航">
-    <a href="#about">XY / 2026</a>
+    <a href="#about">HXY / 2026</a>
     <div class="topbar__right">
       <!-- 北京天气：由页面下方的 Open-Meteo 请求自动更新 -->
       <span class="weather" id="weather" role="status" aria-live="polite" aria-label="正在加载北京天气">
@@ -675,8 +996,8 @@
     <section class="screen about" id="about" aria-labelledby="about-title">
       <div class="about__copy">
         <p class="eyebrow">ABOUT ME · 01</p>
-        <!-- 昵称：修改下面的“筱悦”即可 -->
-        <h1 id="about-title">筱悦</h1>
+        <!-- 姓名：修改下面的“胡筱悦”即可 -->
+        <h1 id="about-title">胡筱悦</h1>
         <!-- 一句话介绍：可在此替换 -->
         <p class="intro">传媒背景的 AI 学习者，喜欢把复杂的问题梳理成清晰、有温度的表达。</p>
 
@@ -698,10 +1019,10 @@
         </div>
       </div>
 
-      <div class="about__visual" aria-label="筱悦的头像照片">
+      <div class="about__visual" aria-label="胡筱悦的头像照片">
         <div class="portrait-frame">
           <!-- 头像图片：替换 src 即可换成新的头像 -->
-          <img class="portrait" src="IMG_7667.JPG" alt="筱悦在户外活动现场的照片" />
+          <img class="portrait" src="IMG_7667.JPG" alt="胡筱悦在户外活动现场的照片" />
           <span class="portrait-tag">CURIOUS · MAKER</span>
         </div>
       </div>
